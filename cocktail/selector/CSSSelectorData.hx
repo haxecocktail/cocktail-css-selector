@@ -33,9 +33,67 @@ enum SelectorParserState {
 	INVALID_SELECTOR;
 }
 
+enum AttributeSelectorParserState {
+	IGNORE_SPACES;
+	END_OPERATOR;
+	ATTRIBUTE;
+	BEGIN_OPERATOR;
+	OPERATOR;
+	IDENTIFIER_VALUE;
+	STRING_VALUE;
+	END_SELECTOR;
+	INVALID_SELECTOR;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // SELECTOR STRUCTURES
 //////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * For a given element, when retrieving
+ * its styles, stores which pseudo-classes
+ * the element currently matches.
+ * 
+ * Also store some additional data about
+ * the node, such as wether it has an ID,
+ * used to optimise cascading
+ */
+class MatchedPseudoClassesVO {
+	
+	public var hover:Bool;
+	public var focus:Bool;
+	public var active:Bool;
+	public var link:Bool;
+	public var enabled:Bool;
+	public var disabled:Bool;
+	public var checked:Bool;
+	public var fullscreen:Bool;
+	
+	public var hasId:Bool;
+	public var nodeId:String;
+	public var hasClasses:Bool;
+	public var nodeClassList:Array<String>;
+	public var nodeType:String;
+	
+	public function new(hover:Bool, focus:Bool, active:Bool, link:Bool, enabled:Bool,
+	disabled:Bool, checked:Bool, fullscreen:Bool,
+	hasId:Bool, hasClasses:Bool, nodeId:String, nodeClassList:Array<String>, nodeType:String) 
+	{
+		this.hover = hover;
+		this.focus = focus;
+		this.active = active;
+		this.link = link;
+		this.enabled = enabled;
+		this.disabled = disabled;
+		this.checked = checked;
+        this.fullscreen = fullscreen;
+		this.hasId = hasId;
+		this.hasClasses = false;
+		this.nodeId = nodeId;
+		this.nodeClassList = nodeClassList;
+		this.nodeType = nodeType;
+	}
+}
 
 /**
  * Holds the data used to determine a selector specificity (priority).

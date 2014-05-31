@@ -8,7 +8,7 @@
 */
 package cocktail.selector;
 
-import cocktail.core.css.CSSData;
+import cocktail.selector.CSSSelectorData;
 
 /**
  * This class serialize a CSS selector

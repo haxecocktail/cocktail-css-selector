@@ -9,8 +9,7 @@
 package cocktail.selector;
 
 using StringTools;
-import cocktail.core.css.CSSData;
-import cocktail.core.css.parsers.CSSParsersData;
+import cocktail.selector.CSSSelectorData;
 
 /**
  * This class is a parser whose role
