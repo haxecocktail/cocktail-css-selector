@@ -8,8 +8,13 @@
 */
 package cocktail.selector;
 
+#if js
 import js.html.Element;
 import js.html.DOMTokenList;
+#else
+import cocktail.dom.Element;
+import cocktail.dom.DOMTokenList;
+#end
 import cocktail.selector.CSSSelectorData;
 
 /**
