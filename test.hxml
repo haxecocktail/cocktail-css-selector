@@ -2,6 +2,8 @@
 -main TestMain
 -lib munit
 -lib hamcrest
+-lib cocktail-dom
+-lib cocktail-dom-event
 -cp cocktail
 
 -cp test
@@ -14,6 +16,8 @@
 -main TestMain
 -lib munit
 -lib hamcrest
+-lib cocktail-dom
+-lib cocktail-dom-event
 -cp cocktail
 
 -cp test
@@ -37,6 +41,8 @@
 -main TestMain
 -lib munit
 -lib hamcrest
+-lib cocktail-dom
+-lib cocktail-dom-event
 -cp cocktail
 
 -cp test
@@ -48,6 +54,8 @@
 -main TestMain
 -lib munit
 -lib hamcrest
+-lib cocktail-dom
+-lib cocktail-dom-event
 -cp cocktail
 
 -cp test
