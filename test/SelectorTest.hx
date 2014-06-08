@@ -1,6 +1,6 @@
 package;
 
-import cocktail.selector.SelectorManager;
+import cocktail.selector.SelectorMatcher;
 
 class SelectorTest
 {

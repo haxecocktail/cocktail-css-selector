@@ -18,14 +18,14 @@ import cocktail.dom.DOMTokenList;
 import cocktail.css.CSSSelectorData;
 
 /**
- * The selector manager has 2 purposes : 
+ * The selector matcher has 2 purposes : 
  * - For a given element and selector, it returns wether the element
  * matches the selector
  * - For a given selector, it can return its specificity (its priority)
  *     
  * @author Yannick DOMINGUEZ
  */
-class SelectorManager 
+class SelectorMatcher
 {
     /**
      * <html> tag name

@@ -13,6 +13,7 @@ before_script:
   - haxelib install munit
   - haxelib git cocktail-dom-event https://github.com/haxecocktail/cocktail-dom-event
   - haxelib git cocktail-dom https://github.com/haxecocktail/cocktail-dom
+  - haxelib git cocktail-cssom https://github.com/haxecocktail/cocktail-cssom
   - mkdir build
   - mkdir report
 
