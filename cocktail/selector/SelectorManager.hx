@@ -15,7 +15,7 @@ import js.html.DOMTokenList;
 import cocktail.dom.Element;
 import cocktail.dom.DOMTokenList;
 #end
-import cocktail.selector.CSSSelectorData;
+import cocktail.css.CSSSelectorData;
 
 /**
  * The selector manager has 2 purposes : 
