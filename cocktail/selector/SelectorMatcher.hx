@@ -293,16 +293,7 @@ class SelectorMatcher
                     return false;
                 }
                 
-                var length:Int = classList.length;
-                for (i in 0...length)
-                {
-                    if (value == classList[i])
-                    {
-                        return true;
-                    }
-                }
-                
-                return false;
+                return classList.contains(value);
                 
             //for this check the id attribute of the element    
             case ID(value):
