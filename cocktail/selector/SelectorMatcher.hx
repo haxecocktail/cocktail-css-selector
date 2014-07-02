@@ -8,7 +8,7 @@
 */
 package cocktail.selector;
 
-import cocktail.css.CSSSelectorData;
+import cocktail.selector.SelectorData;
 
 /**
  * Interface for a MatchableElement, which will typically
