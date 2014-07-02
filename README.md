@@ -3,4 +3,4 @@
 cocktail-css-selector
 =====================
 
-CSS selector matching
+CSS selector matching, parsing and serializing
