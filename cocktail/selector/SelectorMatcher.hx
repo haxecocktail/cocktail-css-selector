@@ -8,14 +8,34 @@
 */
 package cocktail.selector;
 
-#if js
-import js.html.Element;
-import js.html.DOMTokenList;
-#else
-import cocktail.dom.Element;
-import cocktail.dom.DOMTokenList;
-#end
-import cocktail.css.CSSSelectorData;
+import cocktail.selector.SelectorData;
+
+/**
+ * Interface for a MatchableElement, which will typically
+ * be a DOM node.
+ * Using this abstraction allows for not depend on DOM projects
+ */
+interface IMatchableElement<Element:IMatchableElement<Element, ClassList>, ClassList:IClassList>
+{
+    function getAttribute(name:String):String;
+    function hasChildNodes():Bool;
+    var tagName:String;
+    var previousElementSibling:Element;
+    var nextElementSibling:Element;
+    var parentElement:Element;
+    var id:String;
+    var childNodes:Array<Element>;
+    var classList:ClassList;
+}
+
+/**
+ * Interface for a type able to determine wheter it contains a value,
+ * which will typically be a DOMTokenList
+ */
+interface IClassList
+{
+    function contains(name:String):Bool;
+}
 
 /**
  * The selector matcher has 2 purposes : 
@@ -25,7 +45,7 @@ import cocktail.css.CSSSelectorData;
  *     
  * @author Yannick DOMINGUEZ
  */
-class SelectorMatcher
+class SelectorMatcher<MatchableElement:IMatchableElement<MatchableElement, ClassList>, ClassList:IClassList>
 {
     /**
      * <html> tag name
@@ -61,7 +81,7 @@ class SelectorMatcher
      * For a given element and selector, return wether
      * the element matches all of the components of the selector
      */
-    public function matchSelector(element:Element, selector:SelectorVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    public function matchSelector(element:MatchableElement, selector:SelectorVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         var components:Array<SelectorComponentValue> = selector.components;
         
@@ -131,7 +151,7 @@ class SelectorMatcher
     /**
      * return wether a combinator is matched
      */
-    private function matchCombinator(element:Element, combinator:CombinatorValue, nextSelectorComponent:SelectorComponentValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private function matchCombinator(element:MatchableElement, combinator:CombinatorValue, nextSelectorComponent:SelectorComponentValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         //if the element has no parent, it can't match
         //any combinator
@@ -177,9 +197,9 @@ class SelectorMatcher
      * the preious selector sequence which precedes in 
      * the DOM tree
      */
-    private function matchGeneralSiblingCombinator(element:Element, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private function matchGeneralSiblingCombinator(element:MatchableElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
-        var previousElementSibling:Element = element.previousElementSibling;
+        var previousElementSibling:MatchableElement = element.previousElementSibling;
         
         while (previousElementSibling != null)
         {
@@ -200,9 +220,9 @@ class SelectorMatcher
      * element sibling of the element matches
      * the previous selector
      */
-    private function  matchAdjacentSiblingCombinator(element:Element, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private function  matchAdjacentSiblingCombinator(element:MatchableElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
-        var previousElementSibling:Element = element.previousElementSibling;
+        var previousElementSibling:MatchableElement = element.previousElementSibling;
         
         if (previousElementSibling == null)
         {
@@ -217,9 +237,9 @@ class SelectorMatcher
      * It is matched when an ancestor of the element
      * matches the next selector sequence
      */
-    private function matchDescendantCombinator(element:Element, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private function matchDescendantCombinator(element:MatchableElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
-        var parentElement:Element = element.parentElement;
+        var parentElement:MatchableElement = element.parentElement;
         
         //check that at least one ancestor matches
         //the parent selector
@@ -243,7 +263,7 @@ class SelectorMatcher
      * next selector sequence must be matched by the 
      * direct parent of the element and not just any ancestor
      */
-    private function matchChildCombinator(element:Element, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private function matchChildCombinator(element:MatchableElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         return matchSimpleSelectorSequence(element.parentElement, nextSelectorSequence, matchedPseudoClasses);
     }
@@ -261,7 +281,7 @@ class SelectorMatcher
      * A simple selector sequence always start with either a type (like 'div') or a universal ('*')
      * selector
      */
-    private function matchSimpleSelectorSequenceStart(element:Element, simpleSelectorSequenceStart:SimpleSelectorSequenceStartValue):Bool
+    private function matchSimpleSelectorSequenceStart(element:MatchableElement, simpleSelectorSequenceStart:SimpleSelectorSequenceStartValue):Bool
     {
         switch(simpleSelectorSequenceStart)
         {
@@ -279,13 +299,13 @@ class SelectorMatcher
      * (class, ID...) but type or universal which are always at the 
      * begining of a simple selector sequence
      */
-    private function matchSimpleSelectorSequenceItem(element:Element, simpleSelectorSequenceItem:SimpleSelectorSequenceItemValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private function matchSimpleSelectorSequenceItem(element:MatchableElement, simpleSelectorSequenceItem:SimpleSelectorSequenceItemValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         switch(simpleSelectorSequenceItem)
         {
             //for this check the list of class of the element    
             case CSS_CLASS(value):
-                var classList:DOMTokenList = element.classList;
+                var classList:ClassList = element.classList;
                 
                 //here the element has no classes
                 if (classList == null)
@@ -311,7 +331,7 @@ class SelectorMatcher
      * Return wether all items in a simple selector
      * sequence are matched
      */
-    private function matchSimpleSelectorSequence(element:Element, simpleSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private function matchSimpleSelectorSequence(element:MatchableElement, simpleSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         //check if sequence start matches
         if (matchSimpleSelectorSequenceStart(element, simpleSelectorSequence.startValue) == false)
@@ -338,7 +358,7 @@ class SelectorMatcher
      * Return wether an attribute selector
      * matches the element
      */
-    private function matchAttributeSelector(element:Element, attributeSelector:AttributeSelectorValue):Bool
+    private function matchAttributeSelector(element:MatchableElement, attributeSelector:AttributeSelectorValue):Bool
     {
         switch(attributeSelector)
         {
@@ -371,7 +391,7 @@ class SelectorMatcher
      * return wether the value of the "name" attribute is a hyphen
      * separated list whose first item is "value"
      */
-    private function matchAttributeBeginsHyphenList(element:Element, name:String, value:String):Bool
+    private function matchAttributeBeginsHyphenList(element:MatchableElement, name:String, value:String):Bool
     {
         var attributeValue:String = element.getAttribute(name);
         //early exit if the attribute doesn't exist on the element
@@ -394,7 +414,7 @@ class SelectorMatcher
     /**
      * Return wether the value of the "name" attribute ends with "value"
      */
-    private function matchAttributeEndValue(element:Element, name:String, value:String):Bool
+    private function matchAttributeEndValue(element:MatchableElement, name:String, value:String):Bool
     {
         var attributeValue:String = element.getAttribute(name);
         //early exit if the attribute doesn't exist on the element
@@ -409,7 +429,7 @@ class SelectorMatcher
     /**
      * Return wether the value of the "name" attribute contains "value"
      */
-    private function matchAttributeContainsValue(element:Element, name:String, value:String):Bool
+    private function matchAttributeContainsValue(element:MatchableElement, name:String, value:String):Bool
     {
         var attributeValue:String = element.getAttribute(name);
         //early exit if the attribute doesn't exist on the element
@@ -425,7 +445,7 @@ class SelectorMatcher
      * Return wether the value of the "name" attribute
      * on the element begins with "value"
      */
-    private function matchAttributeBeginValue(element:Element, name:String, value:String):Bool
+    private function matchAttributeBeginValue(element:MatchableElement, name:String, value:String):Bool
     {
         var attributeValue:String = element.getAttribute(name);
         //early exit if the attribute doesn't exist on the element
@@ -441,7 +461,7 @@ class SelectorMatcher
      * Return wether "value" is a part of the "name" attribute
      * which is a white-space separated list of values
      */
-    private function matchAttributeList(element:Element, name:String, value:String):Bool
+    private function matchAttributeList(element:MatchableElement, name:String, value:String):Bool
     {
         var attributeValue:String = element.getAttribute(name);
         //early exit if the attribute doesn't exist on the element
@@ -466,7 +486,7 @@ class SelectorMatcher
      * Return wether a pseudo class matches
      * the element
      */
-    private function matchPseudoClassSelector(element:Element, pseudoClassSelector:PseudoClassSelectorValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private function matchPseudoClassSelector(element:MatchableElement, pseudoClassSelector:PseudoClassSelectorValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         switch (pseudoClassSelector)
         {
@@ -503,7 +523,7 @@ class SelectorMatcher
      * Return wether a UI state selector
      * matches the element
      */
-    private function matchUIElementStatesSelector(element:Element, uiElementState:UIElementStatesValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private function matchUIElementStatesSelector(element:MatchableElement, uiElementState:UIElementStatesValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         switch(uiElementState)
         {
@@ -522,7 +542,7 @@ class SelectorMatcher
      * Return wether a negation pseudo-class selector
      * matches the element
      */
-    private function matchNegationPseudoClassSelector(element:Element, negationSimpleSelectorSequence:SimpleSelectorSequenceVO):Bool
+    private function matchNegationPseudoClassSelector(element:MatchableElement, negationSimpleSelectorSequence:SimpleSelectorSequenceVO):Bool
     {
         return false;
     }
@@ -531,7 +551,7 @@ class SelectorMatcher
      * Return wether a lang pseudo-class selector
      * matches the element
      */
-    private function matchLangPseudoClassSelector(element:Element, lang:Array<String>):Bool
+    private function matchLangPseudoClassSelector(element:MatchableElement, lang:Array<String>):Bool
     {
         return false;
     }
@@ -540,7 +560,7 @@ class SelectorMatcher
      * Return wether a structural pseudo-class selector
      * matches the element
      */
-    private function matchStructuralPseudoClassSelector(element:Element, structuralPseudoClassSelector:StructuralPseudoClassSelectorValue):Bool
+    private function matchStructuralPseudoClassSelector(element:MatchableElement, structuralPseudoClassSelector:StructuralPseudoClassSelectorValue):Bool
     {
         switch(structuralPseudoClassSelector)
         {
@@ -605,22 +625,22 @@ class SelectorMatcher
         }
     }
     
-    private function matchNthChild(element:Element, value:StructuralPseudoClassArgumentValue):Bool
+    private function matchNthChild(element:MatchableElement, value:StructuralPseudoClassArgumentValue):Bool
     {
         return false;
     }
     
-    private function matchNthLastChild(element:Element, value:StructuralPseudoClassArgumentValue):Bool
+    private function matchNthLastChild(element:MatchableElement, value:StructuralPseudoClassArgumentValue):Bool
     {
         return false;
     }
     
-    private function matchNthLastOfType(element:Element, value:StructuralPseudoClassArgumentValue):Bool
+    private function matchNthLastOfType(element:MatchableElement, value:StructuralPseudoClassArgumentValue):Bool
     {
         return false;
     }
     
-    private function matchNthOfType(element:Element, value:StructuralPseudoClassArgumentValue):Bool
+    private function matchNthOfType(element:MatchableElement, value:StructuralPseudoClassArgumentValue):Bool
     {
         return false;
     }
@@ -630,11 +650,11 @@ class SelectorMatcher
      * element among its element siblings of
      * its type (tag name)
      */
-    private function matchFirstOfType(element:Element):Bool
+    private function matchFirstOfType(element:MatchableElement):Bool
     {
         var type:String = element.tagName;
         
-        var previousElementSibling:Element = element.previousElementSibling;
+        var previousElementSibling:MatchableElement = element.previousElementSibling;
         
         while (previousElementSibling != null)
         {
@@ -652,11 +672,11 @@ class SelectorMatcher
     /**
      * Same as above but for last element
      */
-    private function matchLastOfType(element:Element):Bool
+    private function matchLastOfType(element:MatchableElement):Bool
     {
         var type:String = element.tagName;
         
-        var nextElementSibling:Element = element.nextElementSibling;
+        var nextElementSibling:MatchableElement = element.nextElementSibling;
         
         while (nextElementSibling != null)
         {
@@ -675,7 +695,7 @@ class SelectorMatcher
      * Return wether this element is the only among
      * its element sibling of its type (tag name)
      */
-    private function matchOnlyOfType(element:Element):Bool
+    private function matchOnlyOfType(element:MatchableElement):Bool
     {
         //to be the only of its type is the same as
         //being the first and last of its type
@@ -686,7 +706,7 @@ class SelectorMatcher
      * Return wether a link pseudo-class selector
      * matches the element
      */
-    private function matchLinkPseudoClassSelector(element:Element, linkPseudoClassSelector:LinkPseudoClassValue, matchedPseudoClass:MatchedPseudoClassesVO):Bool
+    private function matchLinkPseudoClassSelector(element:MatchableElement, linkPseudoClassSelector:LinkPseudoClassValue, matchedPseudoClass:MatchedPseudoClassesVO):Bool
     {
         switch(linkPseudoClassSelector)
         {
@@ -702,7 +722,7 @@ class SelectorMatcher
      * Return wether a user pseudo-class selector
      * matches the element
      */
-    private function matchUserActionPseudoClassSelector(element:Element, userActionPseudoClassSelector:UserActionPseudoClassValue, matchedPseudoClass:MatchedPseudoClassesVO):Bool
+    private function matchUserActionPseudoClassSelector(element:MatchableElement, userActionPseudoClassSelector:UserActionPseudoClassValue, matchedPseudoClass:MatchedPseudoClassesVO):Bool
     {
         switch(userActionPseudoClassSelector)
         {
@@ -721,7 +741,7 @@ class SelectorMatcher
      * Return wether the target pseudo-class 
      * matches the element.
      */
-    private function matchTargetPseudoClassSelector(element:Element):Bool
+    private function matchTargetPseudoClassSelector(element:MatchableElement):Bool
     {
         return false;
     }
