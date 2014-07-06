@@ -23,24 +23,18 @@ import cocktail.selector.parsers.*;
  */
 class CSSSelectorParser 
 {
-
-    public function new() 
-    {
-        
-    }
-    
-    //////////////////////////////////////////////////////////////////////////////////////////
-    // PUBLIC PARSING METHODS
-    //////////////////////////////////////////////////////////////////////////////////////////
-
     /**
      * Parse the selector string into typed selector
      * object and store them in the typed selector
      * attribute if the selector is valid
-     * 
-     * Return wether the selector is valid
+     *
+     * @param selector the CSS selector string to parse
+     * @paran typedSelectors the array that will hold the parsed
+     * selectors.
+     *
+     * @return whether the selector is valid
      */
-    public function parseSelector(selector:String, typedSelectors:Array<SelectorVO>):Bool
+    public static function parse(selector:String, typedSelectors:Array<SelectorVO>):Bool
     {
         var state:SelectorParserState = IGNORE_SPACES;
         var next:SelectorParserState = BEGIN_SIMPLE_SELECTOR;
@@ -106,6 +100,7 @@ class CSSSelectorParser
                             case '['.code:
                                 state = BEGIN_ATTRIBUTE_SELECTOR;
                                 start = position;
+                                continue;
                                 
                             default:
                                 state = INVALID_SELECTOR;
@@ -325,7 +320,7 @@ class CSSSelectorParser
         return true;
     }
 
-    private function flushSelectors(simpleSelectorSequenceStartValue:SimpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue>, components:Array<SelectorComponentValue>):Void
+    private static function flushSelectors(simpleSelectorSequenceStartValue:SimpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue>, components:Array<SelectorComponentValue>):Void
     {
         if (simpleSelectorSequenceStartValue == null && simpleSelectorSequenceItemValues.length == 0)
         {
