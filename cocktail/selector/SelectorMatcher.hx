@@ -81,7 +81,7 @@ class SelectorMatcher<MatchableElement:IMatchableElement<MatchableElement, Class
      * For a given element and selector, return wether
      * the element matches all of the components of the selector
      */
-    public function matchSelector(element:MatchableElement, selector:SelectorVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    public function match(element:MatchableElement, selector:SelectorVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         var components:Array<SelectorComponentValue> = selector.components;
         
