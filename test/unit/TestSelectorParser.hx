@@ -58,7 +58,6 @@ class TestSelectorParser extends BuddySuite implements Buddy {
                 it('should parse pseudo-element selector', function () {
                     var selectors = [];
                     CSSSelectorParser.parse('*::first-line', selectors);
-                    trace(selectors);
                     selectors.length.should.be(1);
                     utest.Assert.same(selectors[0].components, [
                         SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(UNIVERSAL, []))
@@ -66,7 +65,14 @@ class TestSelectorParser extends BuddySuite implements Buddy {
 
                     selectors[0].pseudoElement.should.be(FIRST_LINE);
                 });
-                it('should parse pseudo-class selector');
+                it('should parse pseudo-class selector', function () {
+                    var selectors = [];
+                    CSSSelectorParser.parse(':target', selectors);
+                    selectors.length.should.be(1);
+                    utest.Assert.same(selectors[0].components, [
+                        SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(UNIVERSAL, [PSEUDO_CLASS(TARGET)]))
+                    ]);
+                });
             });
 
             describe('combinators', function () {

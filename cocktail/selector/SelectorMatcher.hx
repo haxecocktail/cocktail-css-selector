@@ -514,7 +514,7 @@ class SelectorMatcher<MatchableElement:IMatchableElement<MatchableElement, Class
             case PseudoClassSelectorValue.FULLSCREEN:
                 return matchedPseudoClasses.fullscreen;
             
-            case PseudoClassSelectorValue.UNKNOWN :
+            default:
                 return false;
         }
     }
