@@ -23,7 +23,7 @@ import cocktail.selector.parsers.*;
  * 
  * @author Yannick DOMINGUEZ
  */
-class CSSSelectorParser 
+class SelectorParser 
 {
     /**
      * Parse the selector string into a typed selector object
