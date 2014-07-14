@@ -483,6 +483,13 @@ enum SelectorParserState {
     INVALID_SELECTOR;
 }
 
+enum SelectorsParserState {
+    IGNORE_SPACES;
+    BEGIN_SELECTOR;
+    END_SELECTOR;
+    SELECTOR;
+}
+
 enum AttributeSelectorParserState {
     IGNORE_SPACES;
     END_OPERATOR;

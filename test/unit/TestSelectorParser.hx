@@ -12,43 +12,43 @@ class TestSelectorParser extends BuddySuite implements Buddy {
     {
         describe('selector parser', function () {
             it('should detect a valid selector', function () {
-                CSSSelectorParser.parse('*').should.not.be(null);
-                CSSSelectorParser.parse('div').should.not.be(null);
-                CSSSelectorParser.parse('.class').should.not.be(null);
-                CSSSelectorParser.parse('#id').should.not.be(null);
+                SelectorParser.parse('*').should.not.be(null);
+                SelectorParser.parse('div').should.not.be(null);
+                SelectorParser.parse('.class').should.not.be(null);
+                SelectorParser.parse('#id').should.not.be(null);
             });
 
             it('should detect an invalid selector', function () {
-                CSSSelectorParser.parse('~').should.be(null);
+                SelectorParser.parse('~').should.be(null);
             });
 
             describe('simple selector', function () {
                 it('should parse universal selector', function () {
-                    var selector =  CSSSelectorParser.parse('*' );
+                    var selector =  SelectorParser.parse('*' );
                     utest.Assert.same(selector.components, [
                         SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(UNIVERSAL, []))
                     ]);
                 });
                 it('should parse type selector', function () {
-                    var selector = CSSSelectorParser.parse('div');
+                    var selector = SelectorParser.parse('div');
                     utest.Assert.same(selector.components, [
                         SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(TYPE('DIV'), []))
                     ]);
                 });
                 it('should parse class selector', function () {
-                    var selector = CSSSelectorParser.parse('.test');
+                    var selector = SelectorParser.parse('.test');
                     utest.Assert.same(selector.components, [
                         SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(UNIVERSAL, [CSS_CLASS('test')]))
                     ]);
                 });
                 it('should parse attribute selector', function () {
-                    var selector = CSSSelectorParser.parse('[test]');
+                    var selector = SelectorParser.parse('[test]');
                     utest.Assert.same(selector.components, [
                         SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(UNIVERSAL, [ATTRIBUTE(AttributeSelectorValue.ATTRIBUTE('test'))]))
                     ]);
                 });
                 it('should parse pseudo-element selector', function () {
-                    var selector = CSSSelectorParser.parse('*::first-line');
+                    var selector = SelectorParser.parse('*::first-line');
                     utest.Assert.same(selector.components, [
                         SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(UNIVERSAL, []))
                     ]);
@@ -56,7 +56,7 @@ class TestSelectorParser extends BuddySuite implements Buddy {
                     selector.pseudoElement.should.be(FIRST_LINE);
                 });
                 it('should parse pseudo-class selector', function () {
-                    var selector = CSSSelectorParser.parse(':target');
+                    var selector = SelectorParser.parse(':target');
                     utest.Assert.same(selector.components, [
                         SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(UNIVERSAL, [PSEUDO_CLASS(TARGET)]))
                     ]);
@@ -66,7 +66,7 @@ class TestSelectorParser extends BuddySuite implements Buddy {
             describe('combinators', function () {
 
                 it('should parse descendant combinators', function () {
-                    var selector = CSSSelectorParser.parse('div p');
+                    var selector = SelectorParser.parse('div p');
                     utest.Assert.same(selector.components, [
                         SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(TYPE('P'), [])),
                         COMBINATOR(DESCENDANT),
@@ -74,7 +74,7 @@ class TestSelectorParser extends BuddySuite implements Buddy {
                     ]);
                 });
                 it('should parse child combinators', function () {
-                    var selector = CSSSelectorParser.parse('div > p');
+                    var selector = SelectorParser.parse('div > p');
                     utest.Assert.same(selector.components, [
                         SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(TYPE('P'), [])),
                         COMBINATOR(CHILD),
@@ -82,7 +82,7 @@ class TestSelectorParser extends BuddySuite implements Buddy {
                     ]);
                 });
                 it('should parse adjacent sibling combinators', function () {
-                    var selector = CSSSelectorParser.parse('div + p');
+                    var selector = SelectorParser.parse('div + p');
                     utest.Assert.same(selector.components, [
                         SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(TYPE('P'), [])),
                         COMBINATOR(ADJACENT_SIBLING),
@@ -90,7 +90,7 @@ class TestSelectorParser extends BuddySuite implements Buddy {
                     ]);
                 });
                 it('should parse general sibling combinators', function () {
-                    var selector = CSSSelectorParser.parse('div ~ p');
+                    var selector = SelectorParser.parse('div ~ p');
                     utest.Assert.same(selector.components, [
                         SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(TYPE('P'), [])),
                         COMBINATOR(GENERAL_SIBLING),
