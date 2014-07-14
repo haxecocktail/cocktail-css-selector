@@ -21,7 +21,6 @@ class TestPseudoClass extends BuddySuite implements Buddy {
             it('should return an error for illegal pseudo class', function () {
                 var selectors = [];
                 var position = PseudoClass.parse('pseudo-pseudo-class', 0, selectors);
-                utest.Assert.same(selectors[0], PSEUDO_CLASS(UNKNOWN));
                 position.should.be(-1);
             });
         });

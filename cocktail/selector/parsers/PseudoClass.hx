@@ -25,54 +25,52 @@ class PseudoClass
         
         var pseudoClass:String = selector.substr(start, position - start);
         
-        var typedPseudoClass:PseudoClassSelectorValue = PseudoClassSelectorValue.UNKNOWN;
-        
-        switch(pseudoClass)
+        var typedPseudoClass:PseudoClassSelectorValue = switch(pseudoClass)
         {
             case 'first-child':
-                typedPseudoClass = PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.FIRST_CHILD);
+                PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.FIRST_CHILD);
                 
             case 'last-child':
-                typedPseudoClass = PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.LAST_CHILD);
+                PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.LAST_CHILD);
         
             case 'empty':
-                typedPseudoClass = PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.EMPTY);
+                PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.EMPTY);
                 
             case 'root':
-                typedPseudoClass = PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.ROOT);
+                PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.ROOT);
                 
             case 'first-of-type':
-                typedPseudoClass = PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.FIRST_OF_TYPE);    
+                PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.FIRST_OF_TYPE);    
                 
             case 'last-of-type':
-                typedPseudoClass = PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.LAST_OF_TYPE);    
+                PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.LAST_OF_TYPE);    
                 
             case 'only-of-type':
-                typedPseudoClass = PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.ONLY_OF_TYPE);    
+                PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.ONLY_OF_TYPE);    
                 
             case 'only-child':
-                typedPseudoClass = PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.ONLY_CHILD);
+                PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.ONLY_CHILD);
                 
             case 'link':
-                typedPseudoClass = PseudoClassSelectorValue.LINK(LinkPseudoClassValue.LINK);    
+                PseudoClassSelectorValue.LINK(LinkPseudoClassValue.LINK);    
                 
             case 'visited':
-                typedPseudoClass = PseudoClassSelectorValue.LINK(LinkPseudoClassValue.VISITED);
+                PseudoClassSelectorValue.LINK(LinkPseudoClassValue.VISITED);
                 
             case 'active':
-                typedPseudoClass = PseudoClassSelectorValue.USER_ACTION(UserActionPseudoClassValue.ACTIVE);
+                PseudoClassSelectorValue.USER_ACTION(UserActionPseudoClassValue.ACTIVE);
                 
             case 'hover':
-                typedPseudoClass = PseudoClassSelectorValue.USER_ACTION(UserActionPseudoClassValue.HOVER);
+                PseudoClassSelectorValue.USER_ACTION(UserActionPseudoClassValue.HOVER);
                 
             case 'focus':
-                typedPseudoClass = PseudoClassSelectorValue.USER_ACTION(UserActionPseudoClassValue.FOCUS);
+                PseudoClassSelectorValue.USER_ACTION(UserActionPseudoClassValue.FOCUS);
                 
             case 'target':
-                typedPseudoClass = PseudoClassSelectorValue.TARGET;
+                PseudoClassSelectorValue.TARGET;
 
             case 'fullscreen':
-                typedPseudoClass = PseudoClassSelectorValue.FULLSCREEN;
+                PseudoClassSelectorValue.FULLSCREEN;
                 
             case 'nth-child':
                 //TODO
@@ -93,24 +91,26 @@ class PseudoClass
                 //TODO
                 
             case 'enabled':
-                typedPseudoClass = PseudoClassSelectorValue.UI_ELEMENT_STATES(UIElementStatesValue.ENABLED);
+                PseudoClassSelectorValue.UI_ELEMENT_STATES(UIElementStatesValue.ENABLED);
                 
             case 'disabled':
-                typedPseudoClass = PseudoClassSelectorValue.UI_ELEMENT_STATES(UIElementStatesValue.DISABLED);
+                PseudoClassSelectorValue.UI_ELEMENT_STATES(UIElementStatesValue.DISABLED);
                 
             case 'checked':
-                typedPseudoClass = PseudoClassSelectorValue.UI_ELEMENT_STATES(UIElementStatesValue.CHECKED);
+                PseudoClassSelectorValue.UI_ELEMENT_STATES(UIElementStatesValue.CHECKED);
                 
+            default: 
+                null;
         }
 
-        
-        simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.PSEUDO_CLASS(typedPseudoClass));
-        
         //selector is invalid
-        if (typedPseudoClass == PseudoClassSelectorValue.UNKNOWN)
+        if (typedPseudoClass == null)
         {
             return -1;
         }
+        
+        simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.PSEUDO_CLASS(typedPseudoClass));
+        
         return --position;
     }
 
