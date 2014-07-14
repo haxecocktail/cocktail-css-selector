@@ -76,14 +76,48 @@ class TestSelectorParser extends BuddySuite implements Buddy {
             });
 
             describe('combinators', function () {
-                it('should parse descendant combinators');
-                it('should parse child combinators');
-                it('should parse adjacent sibling combinators');
-                it('should parse general sibling combinators');
-            });
+                var selectors;
 
-            describe('selectors', function () {
-                it('should parse multiple selectors');
+                before(function () {
+                    selectors = [];
+                });
+
+                it('should parse descendant combinators', function () {
+                    CSSSelectorParser.parse('div p', selectors);
+                    selectors.length.should.be(1);
+                    utest.Assert.same(selectors[0].components, [
+                        SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(TYPE('P'), [])),
+                        COMBINATOR(DESCENDANT),
+                        SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(TYPE('DIV'), []))
+                    ]);
+                });
+                it('should parse child combinators', function () {
+                    CSSSelectorParser.parse('div > p', selectors);
+                    selectors.length.should.be(1);
+                    utest.Assert.same(selectors[0].components, [
+                        SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(TYPE('P'), [])),
+                        COMBINATOR(CHILD),
+                        SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(TYPE('DIV'), []))
+                    ]);
+                });
+                it('should parse adjacent sibling combinators', function () {
+                    CSSSelectorParser.parse('div + p', selectors);
+                    selectors.length.should.be(1);
+                    utest.Assert.same(selectors[0].components, [
+                        SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(TYPE('P'), [])),
+                        COMBINATOR(ADJACENT_SIBLING),
+                        SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(TYPE('DIV'), []))
+                    ]);
+                });
+                it('should parse general sibling combinators', function () {
+                    CSSSelectorParser.parse('div ~ p', selectors);
+                    selectors.length.should.be(1);
+                    utest.Assert.same(selectors[0].components, [
+                        SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(TYPE('P'), [])),
+                        COMBINATOR(GENERAL_SIBLING),
+                        SIMPLE_SELECTOR_SEQUENCE(new SimpleSelectorSequenceVO(TYPE('DIV'), []))
+                    ]);
+                });
             });
         });
     }
