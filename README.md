@@ -39,4 +39,26 @@ class Main {
 
 ```Haxe
 
+//matcher class
+import cocktail.selector.SelectorMatcher;
+
+//Selectors data structures
+import cocktail.selector.SelectorData;
+
+class Main {
+  public static function main() {
+  
+    //takes a matchable element (typically a DOM node) and a
+    //selector and returns whether the element matches the 
+    //selector
+    var isMatched = SelectorMatcher.match(element, 'div');
+  }
+}
+
+```
+
+## Run Tests
+
+```
+make
 ```
