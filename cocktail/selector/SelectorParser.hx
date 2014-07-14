@@ -15,26 +15,23 @@ import cocktail.selector.parsers.*;
 
 /**
  * This class is a parser whose role
- * is to parse a selector string, which may contain
- * one or many selector and parse them into typed
- * selector data
+ * is to parse a single CSS selector string,
+ * and parse it into typed selector data.
+ *
+ * Trying to parse multiple selectors (example: "div, p")
+ * will fail
  * 
  * @author Yannick DOMINGUEZ
  */
 class CSSSelectorParser 
 {
     /**
-     * Parse the selector string into typed selector
-     * object and store them in the typed selector
-     * attribute if the selector is valid
+     * Parse the selector string into a typed selector object
      *
      * @param selector the CSS selector string to parse
-     * @paran typedSelectors the array that will hold the parsed
-     * selectors.
-     *
-     * @return whether the selector is valid
+     * @return the typed selector or null if the selector is invalid
      */
-    public static function parse(selector:String, typedSelectors:Array<SelectorVO>):Bool
+    public static function parse(selector:String):SelectorVO
     {
         var state:SelectorParserState = IGNORE_SPACES;
         var next:SelectorParserState = BEGIN_SIMPLE_SELECTOR;
@@ -239,7 +236,7 @@ class CSSSelectorParser
                     }
                     
                 case INVALID_SELECTOR:
-                    return false;
+                    return null;
             }
             c = selector.fastCodeAt(++position);
         }
@@ -274,7 +271,7 @@ class CSSSelectorParser
         //this selector, it is invalid
         if (selectorData.components.length == 0)
         {
-            return false;
+            return null;
         }
         
         //simple selectors and combinators are parsed from left to 
@@ -316,8 +313,7 @@ class CSSSelectorParser
         firstType != null, firstType
         , isSimpleClassSelector, isSimpleIdSelector, isSimpleTypeSelector);
         
-        typedSelectors.push(typedSelector);
-        return true;
+        return typedSelector;
     }
 
     private static function flushSelectors(simpleSelectorSequenceStartValue:SimpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue>, components:Array<SelectorComponentValue>):Void
