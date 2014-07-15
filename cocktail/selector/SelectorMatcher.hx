@@ -9,6 +9,7 @@
 package cocktail.selector;
 
 import cocktail.selector.SelectorData;
+import cocktail.selector.matchers.Attributes;
 
 /**
  * Interface for a MatchableElement, which will typically
@@ -323,7 +324,7 @@ class SelectorMatcher<MatchableElement:IMatchableElement<MatchableElement, Class
                 return matchPseudoClassSelector(element, value, matchedPseudoClasses);    
             
             case ATTRIBUTE(value):
-                return matchAttributeSelector(element, value);
+                return Attributes.match(element.getAttribute, value);
         }        
     }
     
@@ -352,134 +353,6 @@ class SelectorMatcher<MatchableElement:IMatchableElement<MatchableElement, Class
         }
         
         return true;
-    }
-    
-    /**
-     * Return wether an attribute selector
-     * matches the element
-     */
-    private function matchAttributeSelector(element:MatchableElement, attributeSelector:AttributeSelectorValue):Bool
-    {
-        switch(attributeSelector)
-        {
-            case AttributeSelectorValue.ATTRIBUTE(value):
-                return element.getAttribute(value) != null;
-                
-            case AttributeSelectorValue.ATTRIBUTE_VALUE(name, value):
-                return element.getAttribute(name) == value;
-                
-            case AttributeSelectorValue.ATTRIBUTE_LIST(name, value):
-                return matchAttributeList(element, name, value);
-                
-            case AttributeSelectorValue.ATTRIBUTE_VALUE_BEGINS(name, value):
-                return matchAttributeBeginValue(element, name, value);
-                
-            case AttributeSelectorValue.ATTRIBUTE_VALUE_CONTAINS(name, value):
-                return matchAttributeContainsValue(element, name, value);
-                
-            case AttributeSelectorValue.ATTRIBUTE_VALUE_ENDS(name, value):
-                return matchAttributeEndValue(element, name, value);
-                
-            case AttributeSelectorValue.ATTRIBUTE_VALUE_BEGINS_HYPHEN_LIST(name, value):
-                return matchAttributeBeginsHyphenList(element, name, value);
-        }
-        
-        return true;
-    }
-    
-    /**
-     * return wether the value of the "name" attribute is a hyphen
-     * separated list whose first item is "value"
-     */
-    private function matchAttributeBeginsHyphenList(element:MatchableElement, name:String, value:String):Bool
-    {
-        var attributeValue:String = element.getAttribute(name);
-        //early exit if the attribute doesn't exist on the element
-        if (attributeValue == null)
-        {
-            return false;
-        }
-        
-        //valid if value exactly matches the attribute
-        if (attributeValue == value)
-        {
-            return true;
-        }
-        
-        //else valid if begins with value + hyphen
-        var hyphenValue:String = value + "-";
-        return attributeValue.substr(0, hyphenValue.length) == hyphenValue;
-    }
-    
-    /**
-     * Return wether the value of the "name" attribute ends with "value"
-     */
-    private function matchAttributeEndValue(element:MatchableElement, name:String, value:String):Bool
-    {
-        var attributeValue:String = element.getAttribute(name);
-        //early exit if the attribute doesn't exist on the element
-        if (attributeValue == null)
-        {
-            return false;
-        }
-        
-        return attributeValue.lastIndexOf(value) == attributeValue.length - value.length;
-    }
-    
-    /**
-     * Return wether the value of the "name" attribute contains "value"
-     */
-    private function matchAttributeContainsValue(element:MatchableElement, name:String, value:String):Bool
-    {
-        var attributeValue:String = element.getAttribute(name);
-        //early exit if the attribute doesn't exist on the element
-        if (attributeValue == null)
-        {
-            return false;
-        }
-        
-        return attributeValue.indexOf(value) != -1;
-    }
-    
-    /**
-     * Return wether the value of the "name" attribute
-     * on the element begins with "value"
-     */
-    private function matchAttributeBeginValue(element:MatchableElement, name:String, value:String):Bool
-    {
-        var attributeValue:String = element.getAttribute(name);
-        //early exit if the attribute doesn't exist on the element
-        if (attributeValue == null)
-        {
-            return false;
-        }
-        
-        return attributeValue.indexOf(value) == 0;
-    }
-    
-    /**
-     * Return wether "value" is a part of the "name" attribute
-     * which is a white-space separated list of values
-     */
-    private function matchAttributeList(element:MatchableElement, name:String, value:String):Bool
-    {
-        var attributeValue:String = element.getAttribute(name);
-        //early exit if the attribute doesn't exist on the element
-        if (attributeValue == null)
-        {
-            return false;
-        }
-        
-        var attributeValueAsList:Array<String> = attributeValue.split(" ");
-        for (i in 0...attributeValueAsList.length)
-        {
-            if (attributeValueAsList[i] == value)
-            {
-                return true;
-            }
-        }
-        
-        return false;
     }
     
     /**
