@@ -60,18 +60,11 @@ class SelectorMatcher<MatchableElement:IMatchableElement<MatchableElement, Class
     private static inline var ELEMENT_NODE:Int = 1;
 
     /**
-     * Used to count the current selector specifity.
-     * Implemented as class attribute to only 
-     * instantiate one
-     */
-    private var _selectorSpecificityVO:SelectorSpecificityVO;
-    
-    /**
      * class constructor
      */
     public function new() 
     {
-        _selectorSpecificityVO = new SelectorSpecificityVO();
+
     }
     
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -617,108 +610,5 @@ class SelectorMatcher<MatchableElement:IMatchableElement<MatchableElement, Class
     private function matchTargetPseudoClassSelector(element:MatchableElement):Bool
     {
         return false;
-    }
-    
-    //////////////////////////////////////////////////////////////////////////////////////////
-    // PUBLIC SELECTOR SPECIFICITY METHODS
-    //////////////////////////////////////////////////////////////////////////////////////////
-    
-    /**
-     * Return the specifity of a selector, which is
-     * its priority next to other selector
-     */
-    public function getSelectorSpecifity(selector:SelectorVO):Int
-    {
-        //holds the specificity data, is passed by reference
-        //to all methods which can increment the specificity
-        //attribute
-        //reset before usage
-        _selectorSpecificityVO.classAttributesAndPseudoClassesNumber = 0;
-        _selectorSpecificityVO.idSelectorsNumber = 0;
-        _selectorSpecificityVO.typeAndPseudoElementsNumber = 0;
-        
-        //a pseudo element increment the specificity
-        switch (selector.pseudoElement)
-        {
-            case PseudoElementSelectorValue.FIRST_LETTER,
-            PseudoElementSelectorValue.FIRST_LINE,
-            PseudoElementSelectorValue.AFTER,
-            PseudoElementSelectorValue.BEFORE:
-                _selectorSpecificityVO.typeAndPseudoElementsNumber++;
-            
-            case PseudoElementSelectorValue.NONE:    
-        }
-        
-        var components:Array<SelectorComponentValue> = selector.components;
-        var length:Int = components.length;
-        for (i in 0...length)
-        {
-            var component:SelectorComponentValue = components[i];
-            
-            switch(component)
-            {
-                case SelectorComponentValue.COMBINATOR(value):
-                    
-                case SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(value):
-                    getSimpleSelectorSequenceSpecificity(value, _selectorSpecificityVO);
-            }
-        }
-        
-        //specificity has 3 categories, whose int values are concatenated
-        //for instance, if idSelectorsNumber is equal to 1, classAttributesAndPseudoClassesNumber to 0
-        //and typeAndPseudoElementsNumber to 2,
-        //the specificity is 102
-        return _selectorSpecificityVO.idSelectorsNumber * 100 + _selectorSpecificityVO.classAttributesAndPseudoClassesNumber * 10 + _selectorSpecificityVO.typeAndPseudoElementsNumber;
-    }
-    
-    /**
-     * Increment the specificity of simple selector sequence
-     */
-    private function getSimpleSelectorSequenceSpecificity(simpleSelectorSequence:SimpleSelectorSequenceVO, selectorSpecificity:SelectorSpecificityVO):Void
-    {
-        getSimpleSelectorSequenceStartSpecificity(simpleSelectorSequence.startValue, selectorSpecificity);
-        
-        var simpleSelectors:Array<SimpleSelectorSequenceItemValue> = simpleSelectorSequence.simpleSelectors;
-        var length:Int = simpleSelectors.length;
-        for (i in 0...length)
-        {
-            var simpleSelectorSequenceItem:SimpleSelectorSequenceItemValue = simpleSelectors[i];
-            getSimpleSelectorSequenceItemSpecificity(simpleSelectorSequenceItem, selectorSpecificity);
-        }
-    }
-    
-    /**
-     * Increment specificity according to a simple selector start item
-     */
-    private function getSimpleSelectorSequenceStartSpecificity(simpleSelectorSequenceStart:SimpleSelectorSequenceStartValue, selectorSpecificity:SelectorSpecificityVO):Void
-    {
-        switch(simpleSelectorSequenceStart)
-        {
-            case SimpleSelectorSequenceStartValue.TYPE(value):
-                selectorSpecificity.typeAndPseudoElementsNumber++;
-                
-            case SimpleSelectorSequenceStartValue.UNIVERSAL:
-        }
-    }
-    
-    /**
-     * Increment specificity according to a simple selector item
-     */
-    private function getSimpleSelectorSequenceItemSpecificity(simpleSelectorSequenceItem:SimpleSelectorSequenceItemValue, selectorSpecificity:SelectorSpecificityVO):Void
-    {
-        switch (simpleSelectorSequenceItem)
-        {
-            case ATTRIBUTE(value):
-                selectorSpecificity.classAttributesAndPseudoClassesNumber++;
-                
-            case PSEUDO_CLASS(value):
-                selectorSpecificity.classAttributesAndPseudoClassesNumber++;
-                
-            case CSS_CLASS(value):
-                selectorSpecificity.classAttributesAndPseudoClassesNumber++;
-                
-            case ID(value):
-                selectorSpecificity.idSelectorsNumber++;
-        }
     }
 }
