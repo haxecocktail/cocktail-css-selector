@@ -52,7 +52,7 @@ class Main {
   public static function main() {
 
     //create the DOM node to match
-    var element = new Document().createElement(‘div’);
+    var element = new Document().createElement('div');
   
     //takes a DOM node and a
     //selector and returns whether the element matches the 
@@ -64,7 +64,7 @@ class Main {
     //It is only useful for interactive documents
     var matchedPseudoClasses = new MatchedPseudoClassesVO(//bunch of flags);
 
-    isMatched = SelectorMatcher.match(element, ‘div’, matchedPseudoClasses);
+    isMatched = SelectorMatcher.match(element, 'div', matchedPseudoClasses);
   }
 }
 
