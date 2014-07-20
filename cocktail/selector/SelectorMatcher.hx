@@ -26,7 +26,7 @@ class SelectorMatcher
     /**
      * class constructor
      */
-    public function new() 
+    private function new() 
     {
 
     }
@@ -39,7 +39,7 @@ class SelectorMatcher
      * For a given element and selector, return wether
      * the element matches all of the components of the selector
      */
-    public function match(element:Element, selector:SelectorVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    public static function match(element:Element, selector:SelectorVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         var components:Array<SelectorComponentValue> = selector.components;
         
@@ -109,7 +109,7 @@ class SelectorMatcher
     /**
      * return wether a combinator is matched
      */
-    private function matchCombinator(element:Element, combinator:CombinatorValue, nextSelectorComponent:SelectorComponentValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private static function matchCombinator(element:Element, combinator:CombinatorValue, nextSelectorComponent:SelectorComponentValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         //if the element has no parent, it can't match
         //any combinator
@@ -155,7 +155,7 @@ class SelectorMatcher
      * the preious selector sequence which precedes in 
      * the DOM tree
      */
-    private function matchGeneralSiblingCombinator(element:Element, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private static function matchGeneralSiblingCombinator(element:Element, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         var previousElementSibling = element.previousElementSibling;
         
@@ -178,7 +178,7 @@ class SelectorMatcher
      * element sibling of the element matches
      * the previous selector
      */
-    private function  matchAdjacentSiblingCombinator(element:Element, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private static function  matchAdjacentSiblingCombinator(element:Element, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         var previousElementSibling = element.previousElementSibling;
         
@@ -195,7 +195,7 @@ class SelectorMatcher
      * It is matched when an ancestor of the element
      * matches the next selector sequence
      */
-    private function matchDescendantCombinator(element:Element, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private static function matchDescendantCombinator(element:Element, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         var parentElement = element.parentElement;
         
@@ -221,7 +221,7 @@ class SelectorMatcher
      * next selector sequence must be matched by the 
      * direct parent of the element and not just any ancestor
      */
-    private function matchChildCombinator(element:Element, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private static function matchChildCombinator(element:Element, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         return matchSimpleSelectorSequence(element.parentElement, nextSelectorSequence, matchedPseudoClasses);
     }
@@ -239,7 +239,7 @@ class SelectorMatcher
      * A simple selector sequence always start with either a type (like 'div') or a universal ('*')
      * selector
      */
-    private function matchSimpleSelectorSequenceStart(element:Element, simpleSelectorSequenceStart:SimpleSelectorSequenceStartValue):Bool
+    private static function matchSimpleSelectorSequenceStart(element:Element, simpleSelectorSequenceStart:SimpleSelectorSequenceStartValue):Bool
     {
         switch(simpleSelectorSequenceStart)
         {
@@ -257,7 +257,7 @@ class SelectorMatcher
      * (class, ID...) but type or universal which are always at the 
      * begining of a simple selector sequence
      */
-    private function matchSimpleSelectorSequenceItem(element:Element, simpleSelectorSequenceItem:SimpleSelectorSequenceItemValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private static function matchSimpleSelectorSequenceItem(element:Element, simpleSelectorSequenceItem:SimpleSelectorSequenceItemValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         switch(simpleSelectorSequenceItem)
         {
@@ -289,7 +289,7 @@ class SelectorMatcher
      * Return wether all items in a simple selector
      * sequence are matched
      */
-    private function matchSimpleSelectorSequence(element:Element, simpleSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private static function matchSimpleSelectorSequence(element:Element, simpleSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         //check if sequence start matches
         if (matchSimpleSelectorSequenceStart(element, simpleSelectorSequence.startValue) == false)
@@ -316,7 +316,7 @@ class SelectorMatcher
      * Return wether a pseudo class matches
      * the element
      */
-    private function matchPseudoClassSelector(element:Element, pseudoClassSelector:PseudoClassSelectorValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private static function matchPseudoClassSelector(element:Element, pseudoClassSelector:PseudoClassSelectorValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         switch (pseudoClassSelector)
         {
@@ -353,7 +353,7 @@ class SelectorMatcher
      * Return wether a UI state selector
      * matches the element
      */
-    private function matchUIElementStatesSelector(element:Element, uiElementState:UIElementStatesValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    private static function matchUIElementStatesSelector(element:Element, uiElementState:UIElementStatesValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
         switch(uiElementState)
         {
@@ -372,7 +372,7 @@ class SelectorMatcher
      * Return wether a negation pseudo-class selector
      * matches the element
      */
-    private function matchNegationPseudoClassSelector(element:Element, negationSimpleSelectorSequence:SimpleSelectorSequenceVO):Bool
+    private static function matchNegationPseudoClassSelector(element:Element, negationSimpleSelectorSequence:SimpleSelectorSequenceVO):Bool
     {
         return false;
     }
@@ -381,7 +381,7 @@ class SelectorMatcher
      * Return wether a lang pseudo-class selector
      * matches the element
      */
-    private function matchLangPseudoClassSelector(element:Element, lang:Array<String>):Bool
+    private static function matchLangPseudoClassSelector(element:Element, lang:Array<String>):Bool
     {
         return false;
     }
@@ -390,7 +390,7 @@ class SelectorMatcher
      * Return wether a structural pseudo-class selector
      * matches the element
      */
-    private function matchStructuralPseudoClassSelector(element:Element, structuralPseudoClassSelector:StructuralPseudoClassSelectorValue):Bool
+    private static function matchStructuralPseudoClassSelector(element:Element, structuralPseudoClassSelector:StructuralPseudoClassSelectorValue):Bool
     {
         switch(structuralPseudoClassSelector)
         {
@@ -455,22 +455,22 @@ class SelectorMatcher
         }
     }
     
-    private function matchNthChild(element:Element, value:StructuralPseudoClassArgumentValue):Bool
+    private static function matchNthChild(element:Element, value:StructuralPseudoClassArgumentValue):Bool
     {
         return false;
     }
     
-    private function matchNthLastChild(element:Element, value:StructuralPseudoClassArgumentValue):Bool
+    private static function matchNthLastChild(element:Element, value:StructuralPseudoClassArgumentValue):Bool
     {
         return false;
     }
     
-    private function matchNthLastOfType(element:Element, value:StructuralPseudoClassArgumentValue):Bool
+    private static function matchNthLastOfType(element:Element, value:StructuralPseudoClassArgumentValue):Bool
     {
         return false;
     }
     
-    private function matchNthOfType(element:Element, value:StructuralPseudoClassArgumentValue):Bool
+    private static function matchNthOfType(element:Element, value:StructuralPseudoClassArgumentValue):Bool
     {
         return false;
     }
@@ -480,7 +480,7 @@ class SelectorMatcher
      * element among its element siblings of
      * its type (tag name)
      */
-    private function matchFirstOfType(element:Element):Bool
+    private static function matchFirstOfType(element:Element):Bool
     {
         var type = element.tagName;
         
@@ -502,7 +502,7 @@ class SelectorMatcher
     /**
      * Same as above but for last element
      */
-    private function matchLastOfType(element:Element):Bool
+    private static function matchLastOfType(element:Element):Bool
     {
         var type = element.tagName;
         
@@ -525,7 +525,7 @@ class SelectorMatcher
      * Return wether this element is the only among
      * its element sibling of its type (tag name)
      */
-    private function matchOnlyOfType(element:Element):Bool
+    private static function matchOnlyOfType(element:Element):Bool
     {
         //to be the only of its type is the same as
         //being the first and last of its type
@@ -536,7 +536,7 @@ class SelectorMatcher
      * Return wether a link pseudo-class selector
      * matches the element
      */
-    private function matchLinkPseudoClassSelector(element:Element, linkPseudoClassSelector:LinkPseudoClassValue, matchedPseudoClass:MatchedPseudoClassesVO):Bool
+    private static function matchLinkPseudoClassSelector(element:Element, linkPseudoClassSelector:LinkPseudoClassValue, matchedPseudoClass:MatchedPseudoClassesVO):Bool
     {
         switch(linkPseudoClassSelector)
         {
@@ -552,7 +552,7 @@ class SelectorMatcher
      * Return wether a user pseudo-class selector
      * matches the element
      */
-    private function matchUserActionPseudoClassSelector(element:Element, userActionPseudoClassSelector:UserActionPseudoClassValue, matchedPseudoClass:MatchedPseudoClassesVO):Bool
+    private static function matchUserActionPseudoClassSelector(element:Element, userActionPseudoClassSelector:UserActionPseudoClassValue, matchedPseudoClass:MatchedPseudoClassesVO):Bool
     {
         switch(userActionPseudoClassSelector)
         {
@@ -571,7 +571,7 @@ class SelectorMatcher
      * Return wether the target pseudo-class 
      * matches the element.
      */
-    private function matchTargetPseudoClassSelector(element:Element):Bool
+    private static function matchTargetPseudoClassSelector(element:Element):Bool
     {
         return false;
     }
