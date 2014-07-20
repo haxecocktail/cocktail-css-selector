@@ -62,7 +62,7 @@ class Main {
     //an optional object can be provided specifiying which pseudo-class
     //(hover, active, fullscreen... are currently active in the document).
     //It is only useful for interactive documents
-    var matchedPseudoClasses = new MatchedPseudoClassesVO(//bunch of flags);
+    var matchedPseudoClasses = new MatchedPseudoClassesVO(/*bunch of flags*/);
 
     isMatched = SelectorMatcher.match(element, 'div', matchedPseudoClasses);
   }
