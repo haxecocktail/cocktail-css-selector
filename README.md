@@ -45,13 +45,26 @@ import cocktail.selector.SelectorMatcher;
 //Selectors data structures
 import cocktail.selector.SelectorData;
 
+//DOM lib
+import cocktail.dom.*;
+
 class Main {
   public static function main() {
+
+    //create the DOM node to match
+    var element = new Document().createElement(‘div’);
   
-    //takes a matchable element (typically a DOM node) and a
+    //takes a DOM node and a
     //selector and returns whether the element matches the 
     //selector
     var isMatched = SelectorMatcher.match(element, 'div');
+
+    //an optional object can be provided specifiying which pseudo-class
+    //(hover, active, fullscreen... are currently active in the document).
+    //It is only useful for interactive documents
+    var matchedPseudoClasses = new MatchedPseudoClassesVO(//bunch of flags);
+
+    isMatched = SelectorMatcher.match(element, ‘div’, matchedPseudoClasses);
   }
 }
 

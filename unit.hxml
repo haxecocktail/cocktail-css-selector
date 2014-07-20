@@ -2,6 +2,8 @@
 -main unit.TestMain
 -lib buddy
 -lib utest
+-lib cocktail-dom
+-lib cocktail-dom-event
 
 -cp test
 -swf-version 11
@@ -13,6 +15,9 @@
 -main unit.TestMain
 -lib buddy
 -lib utest
+-lib cocktail-dom
+-lib cocktail-dom-event
+-cp test
 -cp test
 -js build/js_test.js
 
@@ -22,6 +27,8 @@
 -main unit.TestMain
 -lib buddy
 -lib utest
+-lib cocktail-dom
+-lib cocktail-dom-event
 -cp test
 -neko build/neko_test.n
 
@@ -31,6 +38,8 @@
 -main unit.TestMain
 -lib buddy
 -lib utest
+-lib cocktail-dom
+-lib cocktail-dom-event
 
 -cp test
 #-D HXCPP_M64
