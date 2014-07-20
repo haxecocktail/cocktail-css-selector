@@ -1,8 +1,1 @@
-{
-    "name": "cocktail-css-selector",
-    "url": "https://github.com/haxecocktail/cocktail-css-selector",
-    "licence": "MIT",
-    "version": "0.0.0",
-    "description": "css selector parsing/serializing and matching",
-    "contributors": ["yanhick"]
-}
+{"name":"cocktail-css-selector","licence":"MIT","description":"css selector parsing/serializing and matching","contributors":["yanhick"],"version":"0.1.0","url":"https://github.com/haxecocktail/cocktail-css-selector"}
