@@ -40,8 +40,17 @@ class SelectorMatcher
      * For a given element and selector, return wether
      * the element matches all of the components of the selector
      */
-    public static function match(element:Element, selector:SelectorVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+    public static function match(element:Element, selector:SelectorVO, ?matchedPseudoClasses:MatchedPseudoClassesVO):Bool
     {
+
+        //if null, assumes that the document is non-interactive and can't match any of this
+        if (matchedPseudoClasses == null)
+        {
+            matchedPseudoClasses = new MatchedPseudoClassesVO(
+                false, false, false, false, false, false, false, false, false, false,
+                null, null, null);
+        }
+
         var components:Array<SelectorComponentValue> = selector.components;
         
         //a flag set to true when the last item in the components array
